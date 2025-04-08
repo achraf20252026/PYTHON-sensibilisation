@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AquaSphere - Dialogue Hydrique</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-blue: #1a73e8;
+      --water-blue: #00b4d8;
+      --ocean-deep: #0077b6;
+      --foam: #e3f9ff;
+      --input-bg: #f0f8ff;
+      --input-border: #00b4d8;
+      --button-bg: var(--water-blue);
+      --button-hover: var(--ocean-deep);
+      --stat-bg: #ffffff;
+      --stat-border: #00b4d8;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at center, var(--foam), #e3f2fd);
+      min-height: 100vh;
+      margin: 0;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .liquid-background {
+      position: fixed;
+      width: 200vw;
+      height: 200vh;
+      background: linear-gradient(45deg, var(--water-blue), var(--ocean-deep));
+      opacity: 0.1;
+      z-index: -1;
+      animation: liquidFlow 20s infinite linear;
+    }
+
+    @keyframes liquidFlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 30px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 12px 40px rgba(0, 116, 217, 0.15);
+      overflow: hidden;
+      position: relative;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--ocean-deep), var(--water-blue));
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+      position: relative;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 2.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .header p {
+      margin: 10px 0 0;
+      font-style: italic;
+    }
+
+    .interactive-stats {
+      display: flex;
+      justify-content: space-around;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      margin: 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    .stat-card {
+      background: var(--stat-bg);
+      border: 2px solid var(--stat-border);
+      border-radius: 15px;
+      padding: 15px 20px;
+      flex: 1;
+      margin: 0 10px;
+      transition: transform 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .stat-card h3 {
+      margin: 0 0 10px;
+      font-size: 1.4rem;
+    }
+
+    .stat-card p {
+      font-size: 1.8rem;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .stat-card small {
+      display: block;
+      margin-top: 5px;
+      color: #555;
+    }
+
+    .chat-container {
+      padding: 20px;
+      height: 60vh;
+      overflow-y: auto;
+      position: relative;
+      background: #ffffff;
+      border-top: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .message {
+      margin: 20px 0;
+      display: flex;
+      gap: 15px;
+      transition: transform 0.3s ease;
+    }
+
+    .message:hover {
+      transform: translateX(10px);
+    }
+
+    .message-bubble {
+      max-width: 70%;
+      padding: 18px 25px;
+      border-radius: 25px;
+      position: relative;
+      filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.05));
+      word-wrap: break-word;
+    }
+
+    .user-message .message-bubble {
+      background: var(--primary-blue);
+      color: white;
+      clip-path: polygon(0 0, 100% 0, 100% 80%, 98% 100%, 0 100%);
+    }
+
+    .assistant-message .message-bubble {
+      background: var(--foam);
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 2% 100%, 0 80%);
+    }
+
+    .water-drop {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 180, 216, 0.1);
+      border-radius: 50%;
+      animation: drop 2s infinite;
+    }
+
+    @keyframes drop {
+      0% { transform: translateY(-100vh); }
+      100% { transform: translateY(100vh) scale(0.5); }
+    }
+
+    form {
+      display: flex;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      border-top: 1px solid #e0e0e0;
+      align-items: center;
+      gap: 10px;
+    }
+
+    form input[type="text"] {
+      flex: 1;
+      padding: 12px 15px;
+      border: 2px solid var(--input-border);
+      border-radius: 25px;
+      font-size: 1.1rem;
+      background: var(--input-bg);
+      transition: border 0.3s ease;
+    }
+
+    form input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 5px rgba(26, 115, 232, 0.5);
+    }
+
+    form button {
+      padding: 12px 20px;
+      font-size: 1.1rem;
+      background: var(--button-bg);
+      border: none;
+      color: white;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    form button:hover {
+      background: var(--button-hover);
+      transform: scale(1.05);
+    }
+
+    .floating-button {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      background: var(--water-blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0, 180, 216, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .floating-button:hover {
+      transform: scale(1.1) rotate(90deg);
+      background: var(--ocean-deep);
+    }
+  </style>
+</head>
+<body>
+  <div class="liquid-background"></div>
+  
+  <div class="container">
+    <div class="header">
+      <h1>
+        <i class="fas fa-water"></i>
+        AquaSphere
+      </h1>
+      <p>Chaque goutte compte 🌊</p>
+    </div>
+
+    <div class="interactive-stats">
+      <div class="stat-card">
+        <h3>💧 Votre impact</h3>
+        <p class="counter">248L</p>
+        <small>économisés</small>
+      </div>
+      <div class="stat-card">
+        <h3>🌍 Communauté</h3>
+        <p class="counter">1.2K</p>
+        <small>membres</small>
+      </div>
+      <div class="stat-card">
+        <h3>🚰 Objectif global</h3>
+        <p class="counter">5M</p>
+        <small>litres visés</small>
+      </div>
+    </div>
+
+    <div class="chat-container" id="chat-messages">
+      <!-- Messages existants -->
+      <div class="water-drop" style="left:10%;"></div>
+      <div class="water-drop" style="left:30%; animation-delay:0.5s"></div>
+      <div class="water-drop" style="left:70%; animation-delay:1s"></div>
+
+      {% for turn in history %}
+        <div class="message {% if turn.role == 'user' %}user-message{% else %}assistant-message{% endif %}">
+          <div class="message-bubble">
+            {% if turn.role == 'assistant' %}
+              <i class="fas fa-droplet" style="margin-right:10px;"></i>
+            {% endif %}
+            {{ turn.content }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <input type="text" name="user_input" placeholder="Écrivez votre message ici (français, darija ou arabe)..." required autofocus>
+      <button type="submit">
+        <i class="fas fa-paper-plane"></i>
+        Envoyer
+      </button>
+    </form>
+  </div>
+
+  <div class="floating-button" onclick="scrollToBottom()">
+    <i class="fas fa-arrow-down" style="color:white; font-size:1.2em;"></i>
+  </div>
+
+  <script>
+    function scrollToBottom() {
+        var chatMessages = document.getElementById('chat-messages');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function sendMessage() {
+        var input = document.getElementById('message-input');
+        var messageText = input.value.trim();
+        if (messageText !== "") {
+            var messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.textContent = messageText;
+            document.getElementById('chat-messages').appendChild(messageDiv);
+            input.value = "";
+            scrollToBottom();
+        }
+    }
+
+    // Défilement automatique au chargement
+    window.onload = scrollToBottom;
+</script>
+</body>
+</html>
