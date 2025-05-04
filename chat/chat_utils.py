@@ -1,7 +1,7 @@
 import google.generativeai as genai
 
 # Configurez le client avec votre clé API
-genai.configure(api_key="AIzaSyAoNgUMbUASqewpG1MLI-AS926PGtBM01I")  # Remplacez par votre vraie API key
+genai.configure(api_key="**********")  # Remplacez par votre vraie API key
 
 # Choisissez le modèle souhaité
 model = genai.GenerativeModel(model_name="gemini-2.0-flash")
